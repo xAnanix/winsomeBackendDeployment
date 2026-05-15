@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  ADMIN
+  HOTEL_MANAGER
+}
+
+enum HotelStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(HOTEL_MANAGER)
+  createdAt DateTime @default(now())
+  
+  hotels    Hotel[]
+  bookings  Booking[]
+
+  @@map("users")
+}
+
+model Hotel {
+  id        String      @id @default(uuid())
+  name      String
+  city      String
+  address   String
+  stars     Int         @default(3)
+  status    HotelStatus @default(ACTIVE)
+  createdBy String
+  createdAt DateTime    @default(now())
+
+  createdByUser User     @relation(fields: [createdBy], references: [id])
+  rooms         Room[]
+  bookings      Booking[]
+
+  @@map("hotels")
+}
+
+model Room {
+  id                 String   @id @default(uuid())
+  hotelId            String
+  roomType           String
+  capacity           Int
+  pricePerNight      Float
+  availableRoomsCount Int    @default(0)
+  createdAt          DateTime @default(now())
+
+  hotel              Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  bookings           Booking[]
+
+  @@map("rooms")
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  userId      String
+  hotelId     String
+  roomId      String
+  checkIn     DateTime
+  checkOut    DateTime
+  guestCount  Int
+  totalPrice  Float
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+
+  user        User          @relation(fields: [userId], references: [id])
+  hotel       Hotel         @relation(fields: [hotelId], references: [id])
+  room        Room          @relation(fields: [roomId], references: [id])
+
+  @@map("bookings")
+}
