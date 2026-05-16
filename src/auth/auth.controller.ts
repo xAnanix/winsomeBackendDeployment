@@ -33,7 +33,7 @@ export class AuthController {
     const { token, user } = await this.authService.register(registerDto);
     response.cookie("Authentication", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -52,8 +52,8 @@ export class AuthController {
     const { token, user } = await this.authService.login(loginDto);
     response.cookie("Authentication", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     });
     return { user };
