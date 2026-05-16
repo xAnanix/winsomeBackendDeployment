@@ -9,8 +9,9 @@ import { MailService } from "./mail.service";
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         transport: {
-          service: "gmail",
-          secure: true,
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false,
           family: 4,
 
           auth: {
