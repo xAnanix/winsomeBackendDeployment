@@ -2,10 +2,10 @@
   "name": "hotel-booking-backend",
   "version": "1.0.0",
   "description": "Hotel Booking Management System Backend",
-  "main": "dist/main.js",
+  "main": "dist/src/main.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/main.js",
+    "start": "npm run build && node dist/src/main.js",
     "start:dev": "ts-node -r tsconfig-paths/register src/main.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
@@ -40,9 +40,9 @@
     "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.19.41",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.9.3"
   }
 }
