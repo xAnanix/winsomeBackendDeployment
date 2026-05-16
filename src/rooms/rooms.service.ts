@@ -88,15 +88,15 @@ export class RoomsService {
       data: updateRoomDto,
     });
 
-    await this.mailService.sendRoomUpdatedNotification({
-      to: room.hotel.createdByUser.email,
-      recipientName: room.hotel.createdByUser.name,
-      hotelName: room.hotel.name,
-      roomType: updatedRoom.roomType,
-      capacity: updatedRoom.capacity,
-      pricePerNight: updatedRoom.pricePerNight,
-      availableRoomsCount: updatedRoom.availableRoomsCount,
-    });
+    // await this.mailService.sendRoomUpdatedNotification({
+    //   to: room.hotel.createdByUser.email,
+    //   recipientName: room.hotel.createdByUser.name,
+    //   hotelName: room.hotel.name,
+    //   roomType: updatedRoom.roomType,
+    //   capacity: updatedRoom.capacity,
+    //   pricePerNight: updatedRoom.pricePerNight,
+    //   availableRoomsCount: updatedRoom.availableRoomsCount,
+    // });
 
     return updatedRoom;
   }
@@ -122,15 +122,15 @@ export class RoomsService {
 
     await this.prisma.room.delete({ where: { id } });
 
-    await this.mailService.sendRoomDeletedNotification({
-      to: room.hotel.createdByUser.email,
-      recipientName: room.hotel.createdByUser.name,
-      hotelName: room.hotel.name,
-      roomType: room.roomType,
-      capacity: room.capacity,
-      pricePerNight: room.pricePerNight,
-      availableRoomsCount: room.availableRoomsCount,
-    });
+    // await this.mailService.sendRoomDeletedNotification({
+    //   to: room.hotel.createdByUser.email,
+    //   recipientName: room.hotel.createdByUser.name,
+    //   hotelName: room.hotel.name,
+    //   roomType: room.roomType,
+    //   capacity: room.capacity,
+    //   pricePerNight: room.pricePerNight,
+    //   availableRoomsCount: room.availableRoomsCount,
+    // });
 
     return { message: "Room deleted successfully" };
   }

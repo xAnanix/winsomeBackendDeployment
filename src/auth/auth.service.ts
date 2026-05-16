@@ -40,7 +40,7 @@ export class AuthService {
 
     const token = this.generateToken(user.id, user.email, user.role);
 
-    await this.mailService.sendWelcomeEmail(user.name, user.email, user.role);
+    // await this.mailService.sendWelcomeEmail(user.name, user.email, user.role);
 
     return {
       user: {
@@ -73,7 +73,7 @@ export class AuthService {
 
     const token = this.generateToken(user.id, user.email, user.role);
 
-    await this.mailService.sendLoginNotification(user.name, user.email);
+    // await this.mailService.sendLoginNotification(user.name, user.email);
 
     return {
       user: {

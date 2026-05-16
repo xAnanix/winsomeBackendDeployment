@@ -102,15 +102,15 @@ export class HotelsService {
       data: updateHotelDto,
     });
 
-    await this.mailService.sendHotelUpdatedNotification({
-      to: hotel.createdByUser.email,
-      recipientName: hotel.createdByUser.name,
-      hotelName: updatedHotel.name,
-      city: updatedHotel.city,
-      address: updatedHotel.address,
-      stars: updatedHotel.stars,
-      status: updatedHotel.status,
-    });
+    // await this.mailService.sendHotelUpdatedNotification({
+    //   to: hotel.createdByUser.email,
+    //   recipientName: hotel.createdByUser.name,
+    //   hotelName: updatedHotel.name,
+    //   city: updatedHotel.city,
+    //   address: updatedHotel.address,
+    //   stars: updatedHotel.stars,
+    //   status: updatedHotel.status,
+    // });
 
     return updatedHotel;
   }
@@ -124,15 +124,15 @@ export class HotelsService {
 
     await this.prisma.hotel.delete({ where: { id } });
 
-    await this.mailService.sendHotelDeletedNotification({
-      to: hotel.createdByUser.email,
-      recipientName: hotel.createdByUser.name,
-      hotelName: hotel.name,
-      city: hotel.city,
-      address: hotel.address,
-      stars: hotel.stars,
-      status: hotel.status,
-    });
+    // await this.mailService.sendHotelDeletedNotification({
+    //   to: hotel.createdByUser.email,
+    //   recipientName: hotel.createdByUser.name,
+    //   hotelName: hotel.name,
+    //   city: hotel.city,
+    //   address: hotel.address,
+    //   stars: hotel.stars,
+    //   status: hotel.status,
+    // });
 
     return { message: "Hotel deleted successfully" };
   }

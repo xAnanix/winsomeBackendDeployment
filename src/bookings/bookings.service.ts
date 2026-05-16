@@ -166,16 +166,16 @@ export class BookingsService {
       data: { status: updateStatusDto.status },
     });
 
-    await this.mailService.sendBookingStatusUpdatedNotification({
-      to: booking.user.email,
-      recipientName: booking.user.name,
-      bookingId: booking.id,
-      hotelName: booking.hotel.name,
-      roomType: booking.room.roomType,
-      status: updatedBooking.status,
-      checkIn: booking.checkIn,
-      checkOut: booking.checkOut,
-    });
+    // await this.mailService.sendBookingStatusUpdatedNotification({
+    //   to: booking.user.email,
+    //   recipientName: booking.user.name,
+    //   bookingId: booking.id,
+    //   hotelName: booking.hotel.name,
+    //   roomType: booking.room.roomType,
+    //   status: updatedBooking.status,
+    //   checkIn: booking.checkIn,
+    //   checkOut: booking.checkOut,
+    // });
 
     return updatedBooking;
   }
@@ -221,17 +221,17 @@ export class BookingsService {
       data: { status: BookingStatus.CONFIRMED },
     });
 
-    await this.mailService.sendPaymentConfirmation({
-      to: booking.user.email,
-      recipientName: booking.user.name,
-      bookingId: updatedBooking.id,
-      hotelName: booking.hotel.name,
-      roomType: booking.room.roomType,
-      totalPrice: updatedBooking.totalPrice,
-      transactionId,
-      checkIn: booking.checkIn,
-      checkOut: booking.checkOut,
-    });
+    // await this.mailService.sendPaymentConfirmation({
+    //   to: booking.user.email,
+    //   recipientName: booking.user.name,
+    //   bookingId: updatedBooking.id,
+    //   hotelName: booking.hotel.name,
+    //   roomType: booking.room.roomType,
+    //   totalPrice: updatedBooking.totalPrice,
+    //   transactionId,
+    //   checkIn: booking.checkIn,
+    //   checkOut: booking.checkOut,
+    // });
 
     return {
       success: true,
