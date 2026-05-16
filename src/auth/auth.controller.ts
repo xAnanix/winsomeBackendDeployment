@@ -10,12 +10,31 @@ import {
   Req,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { Response, Request } from "express";
+import { Response, CookieOptions } from "express";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { CurrentUser } from "./decorators/current-user.decorator";
+
+const getAuthCookieOptions = (): CookieOptions => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 24 * 60 * 60 * 1000,
+  path: "/",
+});
+
+const getAuthClearCookieOptions = (): CookieOptions => {
+  const { httpOnly, secure, sameSite, path } = getAuthCookieOptions();
+
+  return {
+    httpOnly,
+    secure,
+    sameSite,
+    path,
+  };
+};
 
 @ApiTags("auth")
 @Controller("auth")
@@ -31,12 +50,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const { token, user } = await this.authService.register(registerDto);
-    response.cookie("Authentication", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    response.cookie("Authentication", token, getAuthCookieOptions());
     return { user };
   }
 
@@ -50,12 +64,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const { token, user } = await this.authService.login(loginDto);
-    response.cookie("Authentication", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    response.cookie("Authentication", token, getAuthCookieOptions());
     return { user };
   }
 
@@ -64,7 +73,7 @@ export class AuthController {
   @ApiOperation({ summary: "Logout user" })
   @ApiResponse({ status: 200, description: "Logout successful" })
   logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie("Authentication");
+    response.clearCookie("Authentication", getAuthClearCookieOptions());
     return { message: "Logged out successfully" };
   }
 

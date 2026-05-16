@@ -11,9 +11,7 @@ import { MailService } from "./mail.service";
           host: configService.getOrThrow<string>("MAIL_HOST"),
           port: parseInt(configService.getOrThrow<string>("MAIL_PORT"), 10),
           secure: configService.getOrThrow<string>("MAIL_SECURE") === "true",
-          tls: {
-            rejectUnauthorized: false,
-          },
+          
           auth: {
             user: configService.getOrThrow<string>("MAIL_USER"),
             pass: configService.getOrThrow<string>("MAIL_PASSWORD"),
