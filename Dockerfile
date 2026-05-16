@@ -1,19 +1,18 @@
-FROM node:20-alpine
+FROM node:20
 
 WORKDIR /app
 
 COPY package*.json ./
 COPY prisma ./prisma/
-COPY tsconfig.json ./
 
 RUN npm install
 
-RUN npx prisma generate
-
 COPY . .
+
+RUN npx prisma generate
 
 RUN npm run build
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["node", "dist/src/main.js"]
