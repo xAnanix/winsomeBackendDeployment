@@ -7,10 +7,14 @@ import { PrismaService } from "../prisma/prisma.service";
 import { CreateBookingDto } from "./dto/create-booking.dto";
 import { UpdateBookingStatusDto } from "./dto/update-booking-status.dto";
 import { BookingStatus } from "@prisma/client";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class BookingsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   async create(createBookingDto: CreateBookingDto, userId: string) {
     const { hotelId, roomId, checkIn, checkOut, guestCount } = createBookingDto;
@@ -157,10 +161,23 @@ export class BookingsService {
       }
     }
 
-    return this.prisma.booking.update({
+    const updatedBooking = await this.prisma.booking.update({
       where: { id },
       data: { status: updateStatusDto.status },
     });
+
+    await this.mailService.sendBookingStatusUpdatedNotification({
+      to: booking.user.email,
+      recipientName: booking.user.name,
+      bookingId: booking.id,
+      hotelName: booking.hotel.name,
+      roomType: booking.room.roomType,
+      status: updatedBooking.status,
+      checkIn: booking.checkIn,
+      checkOut: booking.checkOut,
+    });
+
+    return updatedBooking;
   }
 
   async simulatePayment(bookingId: string, userId: string, userRole: string) {
@@ -185,23 +202,35 @@ export class BookingsService {
       };
     }
 
-    const paymentSucceeded = Math.random() >= 0.25;
+    // const paymentSucceeded = Math.random() >= 0.25;
     const transactionId = `SIM-${booking.id.slice(0, 8).toUpperCase()}-${Date.now()}`;
 
-    if (!paymentSucceeded) {
-      return {
-        success: false,
-        bookingId: booking.id,
-        amount: booking.totalPrice,
-        transactionId,
-        status: "FAILED",
-        message: "Payment simulation failed. Please try again.",
-      };
-    }
+    // if (!paymentSucceeded) {
+    //   return {
+    //     success: false,
+    //     bookingId: booking.id,
+    //     amount: booking.totalPrice,
+    //     transactionId,
+    //     status: "FAILED",
+    //     message: "Payment simulation failed. Please try again.",
+    //   };
+    // }
 
     const updatedBooking = await this.prisma.booking.update({
       where: { id: booking.id },
       data: { status: BookingStatus.CONFIRMED },
+    });
+
+    await this.mailService.sendPaymentConfirmation({
+      to: booking.user.email,
+      recipientName: booking.user.name,
+      bookingId: updatedBooking.id,
+      hotelName: booking.hotel.name,
+      roomType: booking.room.roomType,
+      totalPrice: updatedBooking.totalPrice,
+      transactionId,
+      checkIn: booking.checkIn,
+      checkOut: booking.checkOut,
     });
 
     return {
