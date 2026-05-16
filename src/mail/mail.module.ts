@@ -6,24 +6,26 @@ import { MailService } from "./mail.service";
 @Module({
   imports: [
     MailerModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         transport: {
-          host: configService.getOrThrow<string>("MAIL_HOST"),
-          port: parseInt(configService.getOrThrow<string>("MAIL_PORT"), 10),
-          secure: configService.getOrThrow<string>("MAIL_SECURE") === "true",
-          
+          service: "gmail",
+          secure: true,
+          family: 4,
+
           auth: {
             user: configService.getOrThrow<string>("MAIL_USER"),
             pass: configService.getOrThrow<string>("MAIL_PASSWORD"),
           },
         },
+
         defaults: {
           from: configService.getOrThrow<string>("MAIL_FROM"),
         },
       }),
-      inject: [ConfigService],
     }),
   ],
+
   providers: [MailService],
   exports: [MailService],
 })
